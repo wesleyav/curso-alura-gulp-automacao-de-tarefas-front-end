@@ -6,6 +6,7 @@ var htmlReplace = require('gulp-html-replace');
 var uglify = require('gulp-uglify');
 var usemin = require('gulp-usemin');
 var cssmin = require('gulp-cssmin');
+var browserSync = require('browser-sync');
 
 gulp.task('default', ['copy'], function () {
     gulp.start('build-img', 'usemin');
@@ -38,4 +39,15 @@ gulp.task('usemin', function () {
             'css': [cssmin]
         }))
         .pipe(gulp.dest('dist'));
+});
+
+gulp.task('server', function () {
+    browserSync.init({
+        server: {
+            baseDir: 'src' //localhost:3000
+            // proxy: "localhost:3000" // se for preciso configurar em outra porta (evitando conflito de servidores)
+        }
+    });
+
+    gulp.watch('src/**/*').on('change', browserSync.reload);
 });
