@@ -10,6 +10,7 @@ var browserSync = require('browser-sync');
 var jshint = require('gulp-jshint');
 var jshintStylish = require('jshint-stylish');
 var csslint = require('gulp-csslint');
+var autoprefixer = require('gulp-autoprefixer');
 
 gulp.task('default', ['copy'], function () {
     gulp.start('build-img', 'usemin');
@@ -29,17 +30,17 @@ gulp.task('clean', function () {
 
 gulp.task('build-img', function () {
 
-    gulp.src('dist/img/**/*')
+    return gulp.src('dist/img/**/*')
         .pipe(imagemin())
         .pipe(gulp.dest('dist/img'));
 });
 
 gulp.task('usemin', function () {
 
-    gulp.src('dist/**/*.html')
+    return gulp.src('dist/**/*.html')
         .pipe(usemin({
             'js': [uglify],
-            'css': [cssmin]
+            'css': [autoprefixer, cssmin]
         }))
         .pipe(gulp.dest('dist'));
 });
