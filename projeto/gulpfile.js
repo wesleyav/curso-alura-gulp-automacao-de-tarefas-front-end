@@ -11,6 +11,7 @@ var jshint = require('gulp-jshint');
 var jshintStylish = require('jshint-stylish');
 var csslint = require('gulp-csslint');
 var autoprefixer = require('gulp-autoprefixer');
+var less = require('gulp-less');
 
 gulp.task('default', ['copy'], function () {
     gulp.start('build-img', 'usemin');
@@ -53,17 +54,29 @@ gulp.task('server', function () {
         }
     });
 
-    gulp.watch('src/js/*.js').on('change', function (event) {
+    gulp.watch('src/**/*').on('change', browserSync.reload);
+
+    gulp.watch('src/js/**/*.js').on('change', function (event) {
+        console.log("Linting " + event.path);
         gulp.src(event.path)
             .pipe(jshint())
             .pipe(jshint.reporter(jshintStylish));
     });
 
-    gulp.watch('src/css/*.css').on('change', function (event) {
+    gulp.watch('src/css/**/*.css').on('change', function (event) {
+        console.log("Linting " + event.path);
         gulp.src(event.path)
             .pipe(csslint())
             .pipe(csslint.reporter());
     });
 
-    gulp.watch('src/**/*').on('change', browserSync.reload);
+    gulp.watch('src/less/**/*.less').on('change', function (event) {
+        console.log('Compilando arquivos: ' + event.path);
+        gulp.src(event.path)
+            .pipe(less().on('error', function (erro) {
+                console.log('Problema na compilação do LESS: ' + erro.filename);
+                console.log(erro.message);
+            }))
+            .pipe(gulp.dest('src/css'));
+    });
 });
